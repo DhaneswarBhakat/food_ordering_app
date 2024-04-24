@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:async/async.dart';
 import 'package:async/src/result/result.dart';
 import 'package:auth/src/domain/auth_service_contract.dart';
 import 'package:auth/src/domain/credential.dart';
@@ -9,15 +11,31 @@ class EmailAuth implements IAuthService, ISignUpService {
 
   final IAuthApi _api;
   Credential _credential;
-  EmailAuth(this._api);
+  EmailAuth(
+    this._api,
+    this._credential,
+  );
+
+
+    void credential({
+    required String email,
+    required String password,
+  }) {
+    _credential = Credential(
+      type: AuthType.email,
+      email: email,
+      password: password, 
+      name: '',
+    );
+  }
 
 
   @override
   Future<Result<Token>> signIn() async {
     assert(_credential != null);
     var result = await _api.signIn(_credential);
-    if(result.isError) return result.asError;
-    return Result.value(Token(result.asValue.value));
+    if(result.isError) return result.asError!;
+    return Result.value(Token(result.asValue!.value));
   }
 
   @override
@@ -28,8 +46,7 @@ class EmailAuth implements IAuthService, ISignUpService {
 
   @override
   Future<Result<Token>> signUp(String name, String email, String password) {
-    // TODO: implement signUp
-    throw UnimplementedError();
+
   }
   
 }
